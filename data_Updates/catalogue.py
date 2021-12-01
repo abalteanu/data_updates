@@ -1,13 +1,9 @@
-class CountryCatalogue:
+import country
+
+class CountryCatalogue():
     def __init__(self, countryFile):
 
-        self._countryCat = {
-            # Dictionary to hold country info from file
-            "countries": [],
-            "continents": [],
-            "populations": [],
-            "areas": []
-        }
+        self._countryCat = []
 
         #opening the file
         try:
@@ -18,14 +14,8 @@ class CountryCatalogue:
 
         next(c_file) # skipping first line
         for lineNum in c_file:
-
             temp = lineNum.strip("\n").split("|")
-
-            print(type(temp[1]))
-            self._countryCat["countries"].append(temp[0])
-            self._countryCat["continents"].append(temp[1])
-            self._countryCat["populations"].append(temp[2])
-            self._countryCat["areas"].append(temp[3])
+            self._countryCat.append(country.Country(temp[0], temp[2], temp[3], temp[1]))
 
     def getCountryList(self):
         return self._countryCat
@@ -44,13 +34,8 @@ class CountryCatalogue:
     def printCountryCatalogue(self):
         # Method that prints a list of the countries and their info to the screen
         # use __repr__ from Country class
-        for i in range(len(self._countryCat["countries"])):
-            print("Country #", i)
-            print("Country: ", self._countryCat["countries"][i])
-            print("Continent: ", self._countryCat["continents"][i])
-            print("Population: ", self._countryCat["populations"][i])
-            print("Area: ", self._countryCat["areas"][i])
-            print()
+        for i in range(len(self._countryCat)):
+            print(self._countryCat[i])
 
     # def saveCountryCatalogue(self, name):
     #     # Method that enables all the country info in the catalogue to be saved to a file

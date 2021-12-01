@@ -1,5 +1,6 @@
 """ Class Country """
 
+
 class Country:
     def __init__(self, name, pop, area, continent):
         self._name = name
