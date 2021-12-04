@@ -1,0 +1,4 @@
+Canada;P=32
+
+Brazil;P=30
+
