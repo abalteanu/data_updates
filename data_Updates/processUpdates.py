@@ -3,13 +3,7 @@ from catalogue import CountryCatalogue
 import country
 
 # global variables - constants because they are given
-africa = "Africa"
-antarctica = "Antarctica"
-arctic = "Arctic"
-asia = "Asia"
-europe = "Europe"
-nAmerica = "North_America"
-sAmerica = "South_America"
+
 continents = ["Africa", "Antarctica", "Arctic", "Asia", "Europe", "North_America", "South_America"]
 
 
@@ -48,7 +42,6 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                 outputF.close()
                 return False, None
 
-
     '''Processing Updates'''
     bu_file = open(badUpdateFile, "w")
 
@@ -56,20 +49,31 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
     for line in u_file:
 
         # if there is a blank line in the file, skip
-        if line == None:
+        if line == "":
             break
-
 
         updatesForCountry = line.strip("\n").split(";")
 
         # taking the name of the country
         countryName = updatesForCountry.pop(0)
         print(countryName)
-        #checking that country name is a sting
-        '''im not sure how this should work, because split automatically makes it into a string'''
-        if type(countryName) != str:
-            bu_file.write(line + "\n")
-            break
+        # checking that country name is a sting
+
+        # checking if country name is valid
+        for i in range(len(countryName)):
+            # checking if the first letter is lowercase
+            if i == 0 and countryName[i].islower():
+                bu_file.write(line + "\n")
+                break
+            # checking if any char is something other than a letter or an underscore
+            if not countryName[i].isalpha or countryName[i]!= "_":
+                bu_file.write(line + "\n")
+                break
+            # checking if the char after an underscore is uppercase
+            if countryName[i] == "_":
+                if countryName[i+1].islower():
+                    bu_file.write(line + "\n")
+                    break
 
         # checking that the number of updates is between 0 and 3 (no more no less)
         countUpdates = 0
@@ -78,7 +82,8 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
             print(update)
             countUpdates += 1
 
-        if 0 < countUpdates > 3:
+        # checking if there are more than three updates called
+        if 0 > countUpdates > 3:
             bu_file.write(line + "\n")
             break
 
@@ -91,43 +96,42 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
             # update_ list is a list of the two parts of a single update "L=value"
             update_list = update.split("=")
             if update_list[0] == "P":
-                p_counter +=1
-
-                # splitting the population information by commas, to check if the length split by each comma is 3
-                popCount = update_list[1].split(",")
-
-                # if the start of the number has more than 3 digits with no commas splitting it, its invalid
-                if len(popCount[0]) < 3:
+                # counter to check how many updates of the P type there are
+                p_counter += 1
+                # if checkNumFormat returns false, it means there was a formatting error in the update and the update
+                # is not valid
+                if checkNumFormat(update_list) == False:
                     bu_file.write(line + "\n")
                     break
-                #checking that the other groups of three are equal to three
-                for i in range(1, len(popCount)):
-                    if len(popCount[i]) != 3:
-                        bu_file.write(line + "\n")
-                        break
 
             elif update_list[0] == "A":
-                a_counter +=1
+                # update validity check for area
+                a_counter += 1
+                if checkNumFormat(update_list) == False:
+                    bu_file.write(line + "\n")
+                    break
+
             elif update_list[0] == "C":
-                c_counter +=1
+                c_counter += 1
+
+                # checking in global list of continents to see if the continent entered is valid
                 contFound = False
                 for i in continents:
-                    if update_list[1] == continent[i]:
+                    if update_list[1] == i:
                         contFound = True
 
-                if  contFound == False:
+                if contFound == False:
                     bu_file.write(line + "\n")
                     break
 
             print(update_list)
 
+        # checking if any of the update types have more than one instance
         if p_counter > 1 or c_counter > 1 or a_counter > 1:
             bu_file.write(line + "\n")
             break
 
-
         # performing updates
-
 
         # finding the index of the country in the catalog so that we can make changes to it.
         countryIndex = catalog.findCountryIndex(countryName)
@@ -135,7 +139,33 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
     catalog.printCountryCatalogue()
 
 
-def checkUpdate(record, countryCatalogue):
-    '''Function that checks whether update record is valid'''
+def checkNumFormat(someList):
+    '''Function that checks the number format for the area and population updates'''
+    valid = True
+    # reversing the number so that it starts with group of three
+    reversed = someList[1][::-1]
+    print(reversed)
 
-    #if type == "P":
+    # checking that number is formatted properly
+    if len(someList[1]) > 3:
+        counter = 0
+        # print(len(update_list[1]))
+        for i in range(len(someList[1])):
+
+            # checking if there is a decimal point in the number
+            if reversed[i] == '.':
+                valid = False
+                return valid
+
+            # checking that there is a comma every fourth index
+            counter += 1
+            print(counter, reversed[i])
+            if counter % 4 == 0:
+                if reversed[i] != ",":
+                    valid = False
+                    return valid
+            else:
+                # checking that there are no repeating commas
+                if reversed[i] == ',':
+                    valid = False
+                    return valid

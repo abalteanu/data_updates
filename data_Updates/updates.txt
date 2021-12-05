@@ -1,2 +1,2 @@
-Canada;P=32
-Brazil;P=30
+Canada;P=33,,234,444
+Brazil;P=30;C=Africo
