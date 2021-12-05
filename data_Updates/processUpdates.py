@@ -57,22 +57,28 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         # taking the name of the country
         countryName = updatesForCountry.pop(0)
         print(countryName)
-        # checking that country name is a sting
-
+        if countryName.isalpha():
+            print(countryName)
         # checking if country name is valid
         for i in range(len(countryName)):
+            print(countryName[i])
             # checking if the first letter is lowercase
             if i == 0 and countryName[i].islower():
                 bu_file.write(line + "\n")
                 break
             # checking if any char is something other than a letter or an underscore
-            if not countryName[i].isalpha or countryName[i]!= "_":
-                bu_file.write(line + "\n")
-                break
+            if not countryName[i].isalpha():
+                if countryName[i] != "_":
+                    bu_file.write(line + "\n")
+                    print(countryName[i])
+                    print("Printing to bad updates")
+                    break
+
             # checking if the char after an underscore is uppercase
             if countryName[i] == "_":
-                if countryName[i+1].islower():
+                if countryName[i + 1].islower():
                     bu_file.write(line + "\n")
+                    print("Printing to bad updates")
                     break
 
         # checking that the number of updates is between 0 and 3 (no more no less)
@@ -85,6 +91,7 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         # checking if there are more than three updates called
         if 0 > countUpdates > 3:
             bu_file.write(line + "\n")
+            print("Printing to bad updates")
             break
 
         p_counter = 0
@@ -102,6 +109,7 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                 # is not valid
                 if checkNumFormat(update_list) == False:
                     bu_file.write(line + "\n")
+                    print("Printing to bad updates")
                     break
 
             elif update_list[0] == "A":
@@ -109,6 +117,7 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                 a_counter += 1
                 if checkNumFormat(update_list) == False:
                     bu_file.write(line + "\n")
+                    print("Printing to bad updates")
                     break
 
             elif update_list[0] == "C":
@@ -122,6 +131,7 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
 
                 if contFound == False:
                     bu_file.write(line + "\n")
+                    print("Printing to bad updates")
                     break
 
             print(update_list)
@@ -129,6 +139,7 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         # checking if any of the update types have more than one instance
         if p_counter > 1 or c_counter > 1 or a_counter > 1:
             bu_file.write(line + "\n")
+            print("Printing to bad updates")
             break
 
         # performing updates
