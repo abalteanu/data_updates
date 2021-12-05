@@ -25,22 +25,8 @@ class CountryCatalogue:
         # if country_name inputted exists in country list, returns country object from catalogue
         # if no country, returns None
         for i in range(len(self._countryCat)):
-            if country_name.lower() == self._countryCat[i].getName().lower():
+            if country_name == self._countryCat[i].getName():
                 return i
-
-    def alphaCountrySort(self):
-        # putting country names into a list
-        countNameList = []
-        for i in range(len(self._countryCat)):
-            countNameList.append(self._countryCat[i].getName().lower())
-        sortedList = sorted(countNameList)
-
-        # making a new organized list of classes
-        newCountryCat = []
-        for i in sortedList:
-            newCountryCat.append(self.findCountry(i))
-        self._countryCat = newCountryCat
-        return newCountryCat
 
     '''Required Methods'''
 
@@ -56,20 +42,24 @@ class CountryCatalogue:
         # sets the Area of a specific country
         index = self.findCountryIndex(country)
         if index != None:
-            self._countryCat[country].setArea(newArea)
+            self._countryCat[index].setArea(newArea)
 
     def setContinentOfCountry(self, newCont, country):
         # sets the continent of a specific country
         index = self.findCountryIndex(country)
         if index != None:
-            self._countryCat[country].setContinent(newCont)
+            self._countryCat[index].setContinent(newCont)
 
-    def findCountry(self, countryName):
+    def findCountry(self, country):
         # uses findCountryIndex method to find if a country is in the catalogue, and returns the country obj if it is
-        country_index = self.findCountryIndex(countryName)
-        if (country_index != None):
-            country = self._countryCat[country_index]
+        found = False
+        for i in range(len(self._countryCat)):
+            if str(self._countryCat[i]) == str(country):
+                found = True
+        if found:
             return country
+        else:
+            return None
 
     def addCountry(self, countryName, pop, area, cont):
         success = False
@@ -99,25 +89,31 @@ class CountryCatalogue:
         # first line
         out_file.write("Country|Continent|Population|Area\n")
         # sorting before inputting into file
-        self.alphaCountrySort()
-
+        self._countryCat = sorted(self._countryCat)
         # writing each line to the file in the proper format, while updating counter
         for count_index in range(len(self._countryCat)):
             new_line = self._countryCat[count_index].getName() + "|" + self._countryCat[count_index].getContinent() + "|" + self._countryCat[count_index].getPopulation() + "|" + self._countryCat[count_index].getArea()
             out_file.write(new_line + "\n")
             counter += 1
 
+        if counter != 0:
+            return counter
+        else:
+            return -1
+
         out_file.close()
 
 
 # countries = CountryCatalogue("data.txt")
-# # countries.printCountryCatalogue()
-# # print(countries.getCountryList())
-# # #print(countries.findCountryIndex("Brazil"))
-# # countries.setPopulationOfCountry(33, "Bazil")
 # countries.printCountryCatalogue()
-# # print(countries.findCountry("China"))
+#
+# #
+# # # countries.printCountryCatalogue()
+# # # print(countries.getCountryList())
+# print(countries.findCountryIndex("Brazil"))
+# countries.setContinentOfCountry("Africa", "Brazil")
+# # countries.printCountryCatalogue()
+# # # print(countries.findCountry("China"))
 # countries.addCountry("Bulgaria", 4000000, 3000000, "Europe")
 # countries.saveCountryCatalogue("output.txt")
-# countries.alphaCountrySort()
 # countries.printCountryCatalogue()

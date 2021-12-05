@@ -29,6 +29,10 @@ class Country:
     def setContinent(self, newContinent):
         self._continent = newContinent
 
+    def __lt__(self, other):
+        # for sorting the list
+        return self._name < other._name
+
     def __repr__(self):
         return self._name + " (pop: " + self._pop + ", size: " + self._area + ") in " + self._continent
 

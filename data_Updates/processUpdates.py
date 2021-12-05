@@ -1,6 +1,7 @@
 import catalogue
 from catalogue import CountryCatalogue
 import country
+from country import Country
 
 # global variables - constants because they are given
 
@@ -51,17 +52,16 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         # if there is a blank line in the file, skip
         if line == "":
             break
+        line = line.replace(" ","")
 
+        # How do i remove spaces?????????????
         updatesForCountry = line.strip("\n").split(";")
 
         # taking the name of the country
         countryName = updatesForCountry.pop(0)
-        print(countryName)
-        if countryName.isalpha():
-            print(countryName)
+
         # checking if country name is valid
         for i in range(len(countryName)):
-            print(countryName[i])
             # checking if the first letter is lowercase
             if i == 0 and countryName[i].islower():
                 bu_file.write(line + "\n")
@@ -70,14 +70,6 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
             if not countryName[i].isalpha():
                 if countryName[i] != "_":
                     bu_file.write(line + "\n")
-                    print(countryName[i])
-                    print("Printing to bad updates")
-                    break
-
-            # checking if the char after an underscore is uppercase
-            if countryName[i] == "_":
-                if countryName[i + 1].islower():
-                    bu_file.write(line + "\n")
                     print("Printing to bad updates")
                     break
 
@@ -85,7 +77,7 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         countUpdates = 0
         for update in updatesForCountry:
             update.strip()
-            print(update)
+            #print(update)
             countUpdates += 1
 
         # checking if there are more than three updates called
@@ -102,6 +94,9 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         for update in updatesForCountry:
             # update_ list is a list of the two parts of a single update "L=value"
             update_list = update.split("=")
+            newPop = ""
+            newCont = ""
+            newArea = ""
             if update_list[0] == "P":
                 # counter to check how many updates of the P type there are
                 p_counter += 1
@@ -112,6 +107,9 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                     print("Printing to bad updates")
                     break
 
+                newPop = update_list[1]
+                print("NewPop:" + newPop)
+
             elif update_list[0] == "A":
                 # update validity check for area
                 a_counter += 1
@@ -119,6 +117,8 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                     bu_file.write(line + "\n")
                     print("Printing to bad updates")
                     break
+                else:
+                    newArea = update_list[1]
 
             elif update_list[0] == "C":
                 c_counter += 1
@@ -133,8 +133,10 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                     bu_file.write(line + "\n")
                     print("Printing to bad updates")
                     break
+                elif contFound == True:
+                    newCont = update_list[1]
 
-            print(update_list)
+            #print(update_list)
 
         # checking if any of the update types have more than one instance
         if p_counter > 1 or c_counter > 1 or a_counter > 1:
@@ -142,10 +144,30 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
             print("Printing to bad updates")
             break
 
-        # performing updates
 
+        '''performing updates'''
         # finding the index of the country in the catalog so that we can make changes to it.
-        countryIndex = catalog.findCountryIndex(countryName)
+        #print(countryName)
+        #print(type(countryName))
+        countryInst = catalog.findCountryIndex(countryName)
+        #print(countryInst)
+        if countryInst == None:
+            catalog.addCountry(countryName, newPop, newArea, newCont)
+        else:
+            print("New pop = " + newPop)
+            if newPop:
+                print("New pop  = " + newPop)
+                catalog.setPopulationOfCountry(newPop, countryName)
+            elif newArea:
+                catalog.setAreaOfCountry(newArea, countryName)
+            elif newCont:
+                catalog.setContinentOfCountry(newCont, countryName)
+
+
+    catalog.saveCountryCatalogue("output.txt")
+
+
+
     bu_file.close()
     catalog.printCountryCatalogue()
 
@@ -155,7 +177,7 @@ def checkNumFormat(someList):
     valid = True
     # reversing the number so that it starts with group of three
     reversed = someList[1][::-1]
-    print(reversed)
+    #print(reversed)
 
     # checking that number is formatted properly
     if len(someList[1]) > 3:
@@ -170,7 +192,7 @@ def checkNumFormat(someList):
 
             # checking that there is a comma every fourth index
             counter += 1
-            print(counter, reversed[i])
+            #print(counter, reversed[i])
             if counter % 4 == 0:
                 if reversed[i] != ",":
                     valid = False
