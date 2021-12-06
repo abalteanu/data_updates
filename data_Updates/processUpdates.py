@@ -48,10 +48,12 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
 
     # discarding invalid updates
     for line in u_file:
-
+        newPop = ""
+        newCont = ""
+        newArea = ""
         # if there is a blank line in the file, skip
-        if line == "":
-            break
+        if line == "\n":
+            continue
         line = line.replace(" ","")
 
         # How do i remove spaces?????????????
@@ -94,9 +96,11 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         for update in updatesForCountry:
             # update_ list is a list of the two parts of a single update "L=value"
             update_list = update.split("=")
-            newPop = ""
-            newCont = ""
-            newArea = ""
+            if len(update_list) > 2:
+                bu_file.write(line + "\n")
+                print("Printing to bad updates")
+                break
+
             if update_list[0] == "P":
                 # counter to check how many updates of the P type there are
                 p_counter += 1
@@ -135,7 +139,6 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                     break
                 elif contFound == True:
                     newCont = update_list[1]
-
             #print(update_list)
 
         # checking if any of the update types have more than one instance
@@ -154,13 +157,12 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         if countryInst == None:
             catalog.addCountry(countryName, newPop, newArea, newCont)
         else:
-            print("New pop = " + newPop)
             if newPop:
-                print("New pop  = " + newPop)
                 catalog.setPopulationOfCountry(newPop, countryName)
-            elif newArea:
+            if newArea:
                 catalog.setAreaOfCountry(newArea, countryName)
-            elif newCont:
+            if newCont:
+                print(newCont)
                 catalog.setContinentOfCountry(newCont, countryName)
 
 

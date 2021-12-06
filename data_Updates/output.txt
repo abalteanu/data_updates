@@ -1,10 +1,2 @@
 Country|Continent|Population|Area
-America|North_America|193,364,000|8,511,965
-Canada|North_America|37| 8,511,965
-China|Asia|193,364,000|8,511,965
-France|Europe|67,067,112|8,511,965
-Germany||83,022,544|
-Mexico||94,469,067|
-United_States_of_America||328,566,312|
-United_states_of_america||328,566,312|
-Vietnam||94,469,067|
+France|Europe|67,067,112|213,000

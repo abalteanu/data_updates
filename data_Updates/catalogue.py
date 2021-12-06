@@ -10,7 +10,12 @@ class CountryCatalogue:
         c_file = open(countryFile, 'r', encoding='utf-8', errors='ignore')
 
         next(c_file)  # skipping first line
+
         for line in c_file:
+            #if the line is empty (contains no info), skip the line
+            if line == "\n":
+                continue
+
             temp = line.strip("\n").split("|")
             new_country = Country(temp[0], temp[2], temp[3], temp[1])
             self._countryCat.append(new_country)

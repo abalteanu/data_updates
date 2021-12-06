@@ -1,5 +1,3 @@
 Country|Continent|Population|Area
-France|South_America||8,511,965
-Canada|North_America|193,364,000|8,511,965
-America|North_America|193,364,000|8,511,965
-China|Asia|193,364,000|8,511,965
+
+France|South_America||1
