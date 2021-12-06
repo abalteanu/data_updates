@@ -68,17 +68,31 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
 
         # taking the name of the country
         countryName = updatesForCountry.pop(0)
-
+        print(countryName)
         if len(countryName) == 0:
             bValid = False
             bu_file.write(line)
             continue
 
-        if checkNumFormat(countryName) == False:
+        # taking the name of the country
+
+        if len(countryName) == 0:
             bValid = False
             bu_file.write(line)
             continue
-
+        # checking if country name is valid
+        for i in range(len(countryName)):
+            # checking if the first letter is lowercase
+            if i == 0 and countryName[i].islower():
+                bValid = False
+                bu_file.write(line)
+                break
+            # checking if any char is something other than a letter or an underscore
+            if not countryName[i].isalpha():
+                if countryName[i] != "_":
+                    bValid = False
+                    bu_file.write(line)
+                    break
 
         # checking that the number of updates is between 0 and 3 (no more no less)
         countUpdates = 0
@@ -161,17 +175,6 @@ def checkNumFormat(someList):
                 valid = False
                 return valid
 
-def checkCountName(name):
-    # checking if country name is valid
-    for i in range(len(name)):
-        # checking if the first letter is lowercase
-        if i == 0 and name[i].islower():
-            return False
-
-        # checking if any char is something other than a letter or an underscore
-        if not name[i].isalpha():
-            if name[i] != "_":
-                return False
 
 def checkUpdate(updList, newP, newA, newC, pCount, aCount, cCount):
 

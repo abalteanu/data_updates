@@ -4,7 +4,6 @@ Canada|North_America|34,207,000|9,976,140
 China|Asia|1,339,190,000|9,596,960
 Colombia|South_America|48,654,392|1,090,909
 Egypt|Africa|93,383,574|1,000,000
-EgyptA=1,000,000|||
 France|Europe|64,668,129|541,656
 Indonesia|Asia|260,581,100|1,809,590
 Italy|Europe|59,801,004|300,000
