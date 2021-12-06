@@ -61,6 +61,7 @@ class CountryCatalogue:
         for i in range(len(self._countryCat)):
             if str(self._countryCat[i]) == str(country):
                 found = True
+
         if found:
             return country
         else:
