@@ -1,5 +1,4 @@
-Canada;P
-CanadaP=37,591,023
-Indonesia;P260,581,345
-germany;A=213,000;P=83,022,544
-;A=213,000;P=83,022,544
+;P=260,581,345
+Italy;X=59,801,999
+Canada;C=North_america
+EgyptA=1,000,000;P=93,384,001

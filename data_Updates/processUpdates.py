@@ -62,18 +62,17 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         if len(updatesForCountry) > 4:
             bValid = False
             bu_file.write(line)
-            break
+            continue
 
         # taking the name of the country
         countryName = updatesForCountry.pop(0)
         if len(countryName) == 0:
             bValid = False
             bu_file.write(line)
-            break
+            continue
         # checking if country name is valid
         for i in range(len(countryName)):
             # checking if the first letter is lowercase
-            print(countryName[i])
             if i == 0 and countryName[i].islower():
                 bValid = False
                 bu_file.write(line)
@@ -83,7 +82,6 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                 if countryName[i] != "_":
                     bValid = False
                     bu_file.write(line)
-                    print("Printing to bad updates")
                     break
 
         # checking that the number of updates is between 0 and 3 (no more no less)
@@ -96,24 +94,20 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         # checking if there are more than three updates called
         if 0 > countUpdates > 3:
             bu_file.write(line)
-            print("Printing to bad updates")
-            break
+            continue
 
         p_counter = 0
         a_counter = 0
         c_counter = 0
-
 
         # checking each individual update for a country
         for update in updatesForCountry:
 
             # update_ list is a list of the two parts of a single update "L=value"
             update_list = update.split("=")
-            print(len(update_list))
-            if len(update_list) > 2 or len(update_list)<=1:
+            if len(update_list) > 2 or len(update_list) <= 1:
                 bValid = False
                 bu_file.write(line)
-                print("Printing to bad updates")
                 break
 
             if update_list[0] == "P":
@@ -124,46 +118,40 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                 if checkNumFormat(update_list) == False:
                     bValid = False
                     bu_file.write(line)
-                    print("Printing to bad updates")
                     break
-
                 newPop = update_list[1]
-                print("NewPop:" + newPop)
-
             elif update_list[0] == "A":
                 # update validity check for area
                 a_counter += 1
                 if checkNumFormat(update_list) == False:
                     bValid = False
                     bu_file.write(line)
-                    print("Printing to bad updates")
                     break
                 else:
                     newArea = update_list[1]
-
             elif update_list[0] == "C":
                 c_counter += 1
-
                 # checking in global list of continents to see if the continent entered is valid
                 contFound = False
                 for i in continents:
                     if update_list[1] == i:
                         contFound = True
-
                 if contFound == False:
                     bValid = False
                     bu_file.write(line)
-                    print("Printing to bad updates")
                     break
                 elif contFound == True:
                     newCont = update_list[1]
-            # print(update_list)
+            else:
+                # if not P,C or A
+                bValid = False
+                bu_file.write(line)
+                break
 
         # checking if any of the update types have more than one instance
         if p_counter > 1 or c_counter > 1 or a_counter > 1:
             bValid = False
             bu_file.write(line)
-            print("Printing to bad updates")
             break
 
         '''performing updates'''
@@ -182,13 +170,14 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                 if newArea:
                     catalog.setAreaOfCountry(newArea, countryName)
                 if newCont:
-                    print(newCont)
+                    # print(newCont)
                     catalog.setContinentOfCountry(newCont, countryName)
 
     catalog.saveCountryCatalogue("output.txt")
 
     bu_file.close()
-    catalog.printCountryCatalogue()
+    # catalog.printCountryCatalogue()
+    return (True, catalog)
 
 
 def checkNumFormat(someList):
