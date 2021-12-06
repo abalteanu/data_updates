@@ -1,0 +1,5 @@
+Country|Continent|Population|Area
+Brazil|South_America||8,511,965
+Canada||34,207,000|9,976,140
+China|Asia|1,339,190,000|9,596,960
+Colombia|South_America|48,654,392|

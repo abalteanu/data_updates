@@ -48,30 +48,41 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
 
     # discarding invalid updates
     for line in u_file:
+        bValid = True
         newPop = ""
         newCont = ""
         newArea = ""
         # if there is a blank line in the file, skip
         if line == "\n":
             continue
-        line = line.replace(" ","")
+        line = line.replace(" ", "")
 
         # How do i remove spaces?????????????
         updatesForCountry = line.strip("\n").split(";")
+        if len(updatesForCountry) > 4:
+            bValid = False
+            bu_file.write(line)
+            break
 
         # taking the name of the country
         countryName = updatesForCountry.pop(0)
-
+        if len(countryName) == 0:
+            bValid = False
+            bu_file.write(line)
+            break
         # checking if country name is valid
         for i in range(len(countryName)):
             # checking if the first letter is lowercase
+            print(countryName[i])
             if i == 0 and countryName[i].islower():
-                bu_file.write(line + "\n")
+                bValid = False
+                bu_file.write(line)
                 break
             # checking if any char is something other than a letter or an underscore
             if not countryName[i].isalpha():
                 if countryName[i] != "_":
-                    bu_file.write(line + "\n")
+                    bValid = False
+                    bu_file.write(line)
                     print("Printing to bad updates")
                     break
 
@@ -79,12 +90,12 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         countUpdates = 0
         for update in updatesForCountry:
             update.strip()
-            #print(update)
+            # print(update)
             countUpdates += 1
 
         # checking if there are more than three updates called
         if 0 > countUpdates > 3:
-            bu_file.write(line + "\n")
+            bu_file.write(line)
             print("Printing to bad updates")
             break
 
@@ -92,12 +103,16 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
         a_counter = 0
         c_counter = 0
 
+
         # checking each individual update for a country
         for update in updatesForCountry:
+
             # update_ list is a list of the two parts of a single update "L=value"
             update_list = update.split("=")
-            if len(update_list) > 2:
-                bu_file.write(line + "\n")
+            print(len(update_list))
+            if len(update_list) > 2 or len(update_list)<=1:
+                bValid = False
+                bu_file.write(line)
                 print("Printing to bad updates")
                 break
 
@@ -107,7 +122,8 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                 # if checkNumFormat returns false, it means there was a formatting error in the update and the update
                 # is not valid
                 if checkNumFormat(update_list) == False:
-                    bu_file.write(line + "\n")
+                    bValid = False
+                    bu_file.write(line)
                     print("Printing to bad updates")
                     break
 
@@ -118,7 +134,8 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                 # update validity check for area
                 a_counter += 1
                 if checkNumFormat(update_list) == False:
-                    bu_file.write(line + "\n")
+                    bValid = False
+                    bu_file.write(line)
                     print("Printing to bad updates")
                     break
                 else:
@@ -134,41 +151,41 @@ def processUpdates(cntryFileName, updateFileName, badUpdateFile):
                         contFound = True
 
                 if contFound == False:
-                    bu_file.write(line + "\n")
+                    bValid = False
+                    bu_file.write(line)
                     print("Printing to bad updates")
                     break
                 elif contFound == True:
                     newCont = update_list[1]
-            #print(update_list)
+            # print(update_list)
 
         # checking if any of the update types have more than one instance
         if p_counter > 1 or c_counter > 1 or a_counter > 1:
-            bu_file.write(line + "\n")
+            bValid = False
+            bu_file.write(line)
             print("Printing to bad updates")
             break
 
-
         '''performing updates'''
         # finding the index of the country in the catalog so that we can make changes to it.
-        #print(countryName)
-        #print(type(countryName))
+        # print(countryName)
+        # print(type(countryName))
         countryInst = catalog.findCountryIndex(countryName)
-        #print(countryInst)
-        if countryInst == None:
-            catalog.addCountry(countryName, newPop, newArea, newCont)
-        else:
-            if newPop:
-                catalog.setPopulationOfCountry(newPop, countryName)
-            if newArea:
-                catalog.setAreaOfCountry(newArea, countryName)
-            if newCont:
-                print(newCont)
-                catalog.setContinentOfCountry(newCont, countryName)
+        # print(countryInst)
+        if bValid == True:
 
+            if countryInst == None:
+                catalog.addCountry(countryName, newPop, newArea, newCont)
+            else:
+                if newPop:
+                    catalog.setPopulationOfCountry(newPop, countryName)
+                if newArea:
+                    catalog.setAreaOfCountry(newArea, countryName)
+                if newCont:
+                    print(newCont)
+                    catalog.setContinentOfCountry(newCont, countryName)
 
     catalog.saveCountryCatalogue("output.txt")
-
-
 
     bu_file.close()
     catalog.printCountryCatalogue()
@@ -179,7 +196,7 @@ def checkNumFormat(someList):
     valid = True
     # reversing the number so that it starts with group of three
     reversed = someList[1][::-1]
-    #print(reversed)
+    # print(reversed)
 
     # checking that number is formatted properly
     if len(someList[1]) > 3:
@@ -194,7 +211,7 @@ def checkNumFormat(someList):
 
             # checking that there is a comma every fourth index
             counter += 1
-            #print(counter, reversed[i])
+            # print(counter, reversed[i])
             if counter % 4 == 0:
                 if reversed[i] != ",":
                     valid = False

@@ -1,1 +1,8 @@
-France; A=213,000 ; P = 67,067,112 ; C=Europe
+Canada ;P
+Canada P=37,591,023
+Indonesia;P 260,581,345
+germany;A=213,000;P=83,022,544
+;A=213,000;P=83,022,544
+Mexico;A=213,000;P=83,022,544;A=213,000;P=83,022,544
+France;A=213,000;A=213,067
+Vietnam;P=94,469,067;C=asia
