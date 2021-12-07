@@ -1,5 +1,6 @@
-from country import Country
+""" CLASS CATALOGUE """
 
+from country import Country
 
 class CountryCatalogue:
     def __init__(self, countryFile):
@@ -68,6 +69,7 @@ class CountryCatalogue:
             return None
 
     def addCountry(self, countryName, pop, area, cont):
+        # adding a country to the catalogue
         success = False
         if self.findCountry(countryName) is None:
             new_country = Country(countryName, pop, area, cont)

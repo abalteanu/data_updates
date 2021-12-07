@@ -1,6 +1,2 @@
-Brazil;P=19,
-;P=260,581,345
-Italy;X=59,801,999
-Canada;C=North_america
-EgyptA=1,000,000;P=93,384,001
-moroco
+Italy; P=59,801,999; P=69,801,000
+Canada;C=North America
